@@ -1,4 +1,4 @@
-FROM wordpress:php7.2
+FROM wordpress
 RUN apt update && \
   apt install ssmtp -y && \
   a2enmod remoteip && \

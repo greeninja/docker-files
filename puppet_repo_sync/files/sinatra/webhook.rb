@@ -27,8 +27,14 @@ post "/payload" do
   logger.debug("Full push object: #{ push }")
 
   branch = push['ref'].split('/').last
+  if push['after'] == "0000000000000000000000000000000000000000"
+    logger.debug("After check sum suggests branch deletion")
+    deleted_branch = true
+  else
+    deleted_branch = false
+  end
 
-  if Dir.exist?("/environments/#{branch}")
+  if Dir.exist?("/environments/#{branch}") and deleted_branch == false
     logger.debug("Directory: /environments/#{branch} exists")
     logger.info("Ensuring branch #{branch} up to date")
     pull = "git -C /environments/#{branch} pull"
@@ -40,7 +46,7 @@ post "/payload" do
       status 500
       body "Error raised in repo_sync"
     end
-  else
+  elsif delete_branch == false
     logger.debug("Directory: /environments/#{branch} does not exist. Cloning repo")
     logger.info("Cloning repo #{repo} and branch #{branch}")
     clone = "git clone -b #{branch} #{repo} /environments/#{branch}"
@@ -51,6 +57,17 @@ post "/payload" do
       logger.debug("Get error from cmd: #{result}")
       status 500
       body "Error raised in repo_sync"
+    end
+  elsif Dir.exist?("/environments/#{branch}") and deleted_branch == true
+    logger.debug("Directory: /environments/#{branch} exists")
+    logger.info("Removing branch #{branch}")
+    del_branch = "rm /environments/#{branch} -rf"
+    cmd = `#{del_branch}`
+    result = $?.exitstatus
+    if result != 0
+      logger.debug("Get error from cmd: #{result}")
+      status 500
+      body "Error raised in delete branch"
     end
   end
 

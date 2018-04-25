@@ -46,7 +46,7 @@ post "/payload" do
       status 500
       body "Error raised in repo_sync"
     end
-  elsif delete_branch == false
+  elsif deleted_branch == false
     logger.debug("Directory: /environments/#{branch} does not exist. Cloning repo")
     logger.info("Cloning repo #{repo} and branch #{branch}")
     clone = "git clone -b #{branch} #{repo} /environments/#{branch}"

@@ -10,25 +10,48 @@ set :bind, '0.0.0.0'
 set :port, 80
 
 repo = ENV['REPO']
+debug = ENV['debug'] || nil
 
-puts "repo = #{repo}"
+# Set logging level
+logger = Logger.new(STDOUT)
+if debug.nil?
+  logger.level = Logger::INFO
+else
+  logger.level = Logger::DEBUG
+end
+
+logger.debug("repo = #{repo}")
 
 post "/payload" do
   push = JSON.parse(request.body.read)
-  puts "SSH address: #{push['project']['git_ssh_url']}"
-  puts "Branch (maybe): #{push['ref']}"
-  puts "Default branch: #{push['project']['default_branch']}"
+  logger.debug("Full push object: #{ push }")
 
   branch = push['ref'].split('/').last
 
   if Dir.exist?("/environments/#{branch}")
-    puts "Directory: /environments/#{branch} exists"
-    puts "Ensuring branch up to date"
-    pull = `git -C /environments/#{branch} pull`
+    logger.debug("Directory: /environments/#{branch} exists")
+    logger.info("Ensuring branch #{branch} up to date")
+    pull = "git -C /environments/#{branch} pull"
+    logger.debug("I ran #{pull}")
+    cmd = `#{pull}`
+    result = $?.exitstatus
+    if result != 0
+      logger.debug("Get error from cmd: #{result}")
+      status 500
+      body "Error raised in repo_sync"
+    end
   else
-    puts "Directory: /environments/#{branch} does not exist. Cloning repo"
-    puts "Cloning repo"
-    clone = `git clone -b #{branch} #{repo} /environments/#{branch}`
+    logger.debug("Directory: /environments/#{branch} does not exist. Cloning repo")
+    logger.info("Cloning repo #{repo} and branch #{branch}")
+    clone = "git clone -b #{branch} #{repo} /environments/#{branch}"
+    logger.debug("I ran #{clone}")
+    cmd = `#{clone}`
+    result = $?.exitstatus
+    if result != 0
+      logger.debug("Get error from cmd: #{result}")
+      status 500
+      body "Error raised in repo_sync"
+    end
   end
 
   # Now respond

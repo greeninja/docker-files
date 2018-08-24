@@ -8,8 +8,9 @@ RUN apk --update upgrade && \
     make linux && \
     cp iozone /usr/bin/iozone && \
     apk del temporary && \
-    rm -rf /var/cache/apk/* /tmp/iozone*
+    rm -rf /var/cache/apk/* /tmp/iozone* && \
+    mkdir /storage
 
-COPY files/iozone.sh iozone.sh
-
-CMD ./iozone.sh
+COPY files/iozone.sh /iozone.sh
+WORKDIR /storage
+CMD /iozone.sh

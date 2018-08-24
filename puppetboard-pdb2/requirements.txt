@@ -1,0 +1,12 @@
+puppetboard==0.0.5
+gunicorn==19.6.0
+Flask >=0.12
+Flask-WTF <=0.9.5,>=0.9.4
+Jinja2 >=2.9.5
+MarkupSafe >=0.19
+WTForms <2.0
+Werkzeug >=0.12.1
+itsdangerous >=0.23
+pypuppetdb <0.2.0,>=0.1.0
+requests >=2.13.0
+CommonMark==0.7.2

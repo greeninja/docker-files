@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: storage-stress-testing-template
+  annotations:
+    description: "Template to stess Default storage class using iozone"
+
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: storage-stress-test
+    labels:
+      app: storage-stress-test
+
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    name: storage-stress
+  spec:
+    selector:
+      matchLabels:
+        app: storage-stress-test
+    serviceName: "storage-stress-test"
+    replicas: ${COUNT}
+    template:
+      metadata:
+        labels:
+          app: storage-stress-test
+      spec:
+        terminationGracePeriodSeconds: 10
+        containers:
+        - name: stress
+          image: greeninja/iozone-test
+          volumeMounts:
+          - name: storage
+            mountPath: /storage
+    volumeClaimTemplates:
+    - metadata:
+        name: storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 20Gi
+parameters:
+- description: "How many pods to start in the statefulset"
+  displayName: "Pod count to start"
+  name: COUNT
+  value: "1"
+

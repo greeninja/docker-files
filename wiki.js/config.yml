@@ -1,0 +1,118 @@
+#######################################################################
+# Wiki.js - CONFIGURATION                                             #
+#######################################################################
+# Full explanation + examples in the documentation:
+# https://docs.requarks.io/wiki/install
+
+# ---------------------------------------------------------------------
+# Title of this site
+# ---------------------------------------------------------------------
+
+title: $(WIKI_TITLE)
+
+# ---------------------------------------------------------------------
+# Full public path to the site, without the trailing slash
+# ---------------------------------------------------------------------
+
+host: $(WIKI_HOST)
+
+# ---------------------------------------------------------------------
+# Port the main server should listen to (80 by default)
+# ---------------------------------------------------------------------
+
+port: $(PORT)
+
+# ---------------------------------------------------------------------
+# Data Directories
+# ---------------------------------------------------------------------
+
+paths:
+  repo: ./repo
+  data: ./data
+
+# ---------------------------------------------------------------------
+# Upload Limits
+# ---------------------------------------------------------------------
+# In megabytes (MB)
+
+uploads:
+  maxImageFileSize: 3
+  maxOtherFileSize: 100
+
+# ---------------------------------------------------------------------
+# Site Language
+# ---------------------------------------------------------------------
+# Possible values: en, es, fr, ko, ru or zh
+
+lang: $(WIKI_LANG)
+
+# ---------------------------------------------------------------------
+# Site Authentication
+# ---------------------------------------------------------------------
+
+public: $(WIKI_IS_PUBLIC)
+
+auth:
+  defaultReadAccess: false
+  local:
+    enabled: true
+
+# ---------------------------------------------------------------------
+# Secret key to use when encrypting sessions
+# ---------------------------------------------------------------------
+# Use a long and unique random string (256-bit keys are perfect!)
+
+sessionSecret: $(WIKI_SESSION_KEY)
+
+# ---------------------------------------------------------------------
+# Database Connection String
+# ---------------------------------------------------------------------
+
+db: $(MONGODB_URI)
+
+# ---------------------------------------------------------------------
+# Git Connection Info
+# ---------------------------------------------------------------------
+
+git:
+  url: $(WIKI_GIT_URL)
+  branch: $(WIKI_GIT_BRANCH)
+  auth:
+
+    # Type: basic or ssh
+    type: basic
+
+    # Only for Basic authentication:
+    username: $(WIKI_GIT_USERNAME)
+    password: $(WIKI_GIT_PASSWORD)
+
+    # Only for SSH authentication:
+    privateKey: /etc/wiki/keys/git.pem
+
+    sslVerify: true
+
+  # Default email to use as commit author
+  serverEmail: $(WIKI_SERVER_EMAIL)
+
+  # Whether to use user email as author in commits
+  showUserEmail: $(WIKI_SHOW_USER_EMAIL)
+
+# ---------------------------------------------------------------------
+# Features
+# ---------------------------------------------------------------------
+# You can enable / disable specific features below
+
+features:
+  linebreaks: true
+  mathjax: true
+
+# ---------------------------------------------------------------------
+# External Logging
+# ---------------------------------------------------------------------
+
+externalLogging:
+  bugsnag: false
+  loggly: false
+  papertrail: false
+  rollbar: false
+  sentry: false

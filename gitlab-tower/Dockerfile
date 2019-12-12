@@ -10,7 +10,7 @@ RUN yum update -y && \
 # Install Tower CLI
 
 RUN yum install -y epel-release && \
-  yum install -y python-pip && \
+  yum install -y python-pip git && \
   pip install ansible-tower-cli && \
   yum clean all
 

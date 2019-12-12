@@ -58,4 +58,6 @@ if [[ ! -f /etc/tower/tower_cli.cfg ]]; then
 
 fi
 
+chmod 755 /etc/tower/tower_cli.cfg
+
 /usr/local/bin/gitlab-runner run --working-directory /home/gitlab-runner --config /etc/gitlab-runner/config.toml --user gitlab-runner
